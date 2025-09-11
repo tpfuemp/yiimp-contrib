@@ -22,7 +22,7 @@ FROM baseimage1804 as coinwallet
 
 # Clone the source code.
 ARG STRATUM_UPDATEPASS
-ARG CURRENT_GITHUB_COMMIT=48c459982ea5f6ef161b2cd60ee7913a18e26a89
+ARG CURRENT_GITHUB_COMMIT=08662769564d7fdfb2076b907cd805427f8e0e22
 
 RUN git clone https://github.com/ghostlander/Phoenixcoin
 WORKDIR /Phoenixcoin/src
@@ -34,7 +34,7 @@ RUN git checkout $CURRENT_GITHUB_COMMIT
 COPY docker.patch /tmp/
 RUN patch < /tmp/docker.patch
 
-RUN make -f makefile.unix clean && make -f makefile.unix && \
+RUN make -f Makefile.linux clean && make -f Makefile.linux && \
     strip phoenixcoind && cp phoenixcoind /usr/bin && \
     cd / && rm /Phoenixcoin -rf && \
     rm ~/.cache -rf

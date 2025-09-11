@@ -17,7 +17,7 @@ FROM baseimage2204 as coinwallet
 
 # Clone the source code.
 ARG STRATUM_UPDATEPASS
-ARG CURRENT_GITHUB_COMMIT=428e315e2460dc2da497409aae1c6972c98eac71
+ARG CURRENT_GITHUB_COMMIT=81419056e2c6a4ecf7fae4398b6c77c63223183f
 
 RUN git clone https://github.com/vkaxcore/vkax
 WORKDIR /vkax

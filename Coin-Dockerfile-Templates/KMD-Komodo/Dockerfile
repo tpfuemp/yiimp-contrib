@@ -17,7 +17,7 @@ FROM baseimage2204 as coinwallet
 
 # Clone the source code.
 ARG STRATUM_UPDATEPASS
-ARG CURRENT_GITHUB_COMMIT=0adeeabdd484ef40539d1275c6a765f5c530ea79
+ARG CURRENT_GITHUB_COMMIT=934d0d9d80f4e1f6e7fc9330dfdcfe8ad5dd6835
 
 RUN git clone https://github.com/KomodoPlatform/komodo
 WORKDIR /komodo

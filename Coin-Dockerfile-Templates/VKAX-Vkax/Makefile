@@ -1,7 +1,7 @@
 # change image name
 image_name=vkax
 # version tag
-version=v100.10.4-windows
+version=v100.11.3
 # local storage for container dumps
 container_savepath=${CONTAINER_SAVEPATH}
 

@@ -22,7 +22,7 @@ FROM baseimage1804 as coinwallet
 
 # Clone the source code.
 ARG STRATUM_UPDATEPASS
-ARG CURRENT_GITHUB_COMMIT=dcd4bd56cf8cc19f2d8f0137dc8fcfa600a6b43e
+ARG CURRENT_GITHUB_COMMIT=20eb0de11e12e2302dbbe9218459a30a958da9af
 
 # build db-5.1.29.NC or use --with-incompatible-bdb in configure
 WORKDIR /tmp
@@ -33,8 +33,8 @@ RUN wget "download.oracle.com/berkeley-db/db-5.1.29.NC.tar.gz" && \
     cd db-5.1.29.NC/build_unix && ../dist/configure --build=x86_64 --prefix=/usr --with-pic --enable-cxx && make && make install && ldconfig  
 WORKDIR /
 
-RUN git clone https://github.com/NewYorkCoin-NYC/nycoin
-WORKDIR /nycoin
+RUN git clone https://github.com/NewYorkCoinNYC/newyorkcoin
+WORKDIR /newyorkcoin
 
 # use the specific commit known to work
 RUN git checkout $CURRENT_GITHUB_COMMIT
@@ -46,7 +46,7 @@ RUN git checkout $CURRENT_GITHUB_COMMIT
 RUN ./autogen.sh && \
     ./configure --with-gui=no --disable-tests --disable-bench && make clean && make && \
     strip src/newyorkcoind && cp src/newyorkcoind /usr/bin && \
-    cd / && rm /nycoin -rf && \
+    cd / && rm /newyorkcoin -rf && \
     rm ~/.cache -rf
 
 # blocknotify

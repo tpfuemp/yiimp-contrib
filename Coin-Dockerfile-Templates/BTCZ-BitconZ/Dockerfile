@@ -17,7 +17,7 @@ FROM baseimage2204 as coinwallet
 
 # Clone the source code.
 ARG STRATUM_UPDATEPASS
-ARG CURRENT_GITHUB_COMMIT=c327f836279309a9301a54073e70eeebbe7edd93
+ARG CURRENT_GITHUB_COMMIT=24a83b2bfea7c8a1e1f583db68af0f470939f504
 
 RUN git clone https://github.com/btcz/bitcoinz
 WORKDIR /bitcoinz

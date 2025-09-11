@@ -1,7 +1,7 @@
 # change image name
 image_name=newyorkcoin
 # version tag
-version=v1.3.1.20
+version=1.14.3
 # local storage for container dumps
 container_savepath=${CONTAINER_SAVEPATH}
 
@@ -21,7 +21,7 @@ registry_username=xxx
 registry_password=xxx
 
 gitclone:
-	git clone https://github.com/NewYorkCoin-NYC/nycoin
+	git clone https://github.com/NewYorkCoinNYC/newyorkcoin
 
 build:
 	podman build --tag ${image_name} --build-arg STRATUM_UPDATEPASS=${STRATUM_UPDATEPASS} --build-arg walletuserid=${walletuserid} --build-arg walletgroupid=${walletgroupid} -f Dockerfile

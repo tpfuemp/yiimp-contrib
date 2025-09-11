@@ -1,7 +1,7 @@
 # change image name
 image_name=dogecoinev
 # version tag
-version=v1.1.0-update1
+version=v1.2.0-patch
 # local storage for container dumps
 container_savepath=${CONTAINER_SAVEPATH}
 

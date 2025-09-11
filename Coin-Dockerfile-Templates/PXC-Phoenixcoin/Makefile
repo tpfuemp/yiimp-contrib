@@ -1,7 +1,7 @@
 # change image name
 image_name=phoenixcoin
 # version tag
-version=v0.6.6.2-pxc
+version=v0.7-pxc
 # local storage for container dumps
 container_savepath=${CONTAINER_SAVEPATH}
 
