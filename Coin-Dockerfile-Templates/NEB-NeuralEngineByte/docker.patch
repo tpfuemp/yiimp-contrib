@@ -1,0 +1,84 @@
+diff --git a/node/crates/neb-node/src/daemon.rs b/node/crates/neb-node/src/daemon.rs
+index 6c194b6..0c11ef9 100644
+--- a/node/crates/neb-node/src/daemon.rs
++++ b/node/crates/neb-node/src/daemon.rs
+@@ -3,8 +3,8 @@
+ //! work service (section 7.1), and dials the configured peers and seeds. A peer or a seed is `HOST:PORT`, where HOST
+ //! is an IP address or a name; a name is resolved at every dial, so a seed that moves to another address is found again.
+ //!
+-//! The work service and JSON-RPC bind to 127.0.0.1 only: they carry no
+-//! authentication. Only the peer listener address is configurable (`--listen`).
++//! The work service and JSON-RPC bind to 127.0.0.1 by default: they carry no
++//! authentication. `--rpc-bind` and `--work-bind` choose another address (docker patch).
+ 
+ use std::io::Read;
+ use std::net::{SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
+@@ -40,6 +40,11 @@ fn parse_hex32(s: &str) -> Option<[u8; 32]> {
+     Some(out)
+ }
+ 
++/// HOST:PORT for a bind address; an IPv6 address is put in brackets.
++fn bind_addr(host: &str, port: u16) -> String {
++    if host.contains(':') { format!("[{host}]:{port}") } else { format!("{host}:{port}") }
++}
++
+ struct Options {
+     network: Network,
+     dataset: Option<String>,
+@@ -48,6 +53,8 @@ struct Options {
+     p2p_port: u16,
+     work_port: u16,
+     rpc_port: u16,
++    rpc_bind: String,
++    work_bind: String,
+     connects: Vec<String>,
+     seeds: Vec<String>,
+     no_seeds: bool,
+@@ -69,6 +76,8 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
+         p2p_port: params::P2P_PORT,
+         work_port: params::WORK_PORT,
+         rpc_port: params::RPC_PORT,
++        rpc_bind: "127.0.0.1".into(),
++        work_bind: "127.0.0.1".into(),
+         connects: Vec::new(),
+         seeds: Vec::new(),
+         no_seeds: false,
+@@ -106,6 +115,20 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
+                 options.rpc_port = value(i)?.parse().map_err(|_| "bad rpc port".to_string())?;
+                 i += 2;
+             }
++            "--rpc-bind" => {
++                options.rpc_bind = value(i)?;
++                bind_addr(&options.rpc_bind, 0)
++                    .parse::<SocketAddr>()
++                    .map_err(|_| "--rpc-bind takes an IP address, for example 0.0.0.0".to_string())?;
++                i += 2;
++            }
++            "--work-bind" => {
++                options.work_bind = value(i)?;
++                bind_addr(&options.work_bind, 0)
++                    .parse::<SocketAddr>()
++                    .map_err(|_| "--work-bind takes an IP address, for example 0.0.0.0".to_string())?;
++                i += 2;
++            }
+             "--connect" => {
+                 options.connects.push(value(i)?);
+                 i += 2;
+@@ -288,7 +311,7 @@ pub fn run(args: &[String]) -> i32 {
+         }
+     };
+     log.note(&format!("peer listener {}", p2p.addr));
+-    let rpc_bind = format!("127.0.0.1:{}", options.rpc_port);
++    let rpc_bind = bind_addr(&options.rpc_bind, options.rpc_port);
+     let rpc = match node.start_rpc(rpc_bind.parse().expect("rpc address")) {
+         Ok(handle) => handle,
+         Err(e) => {
+@@ -326,7 +349,7 @@ pub fn run(args: &[String]) -> i32 {
+     let tip = node.clone();
+     log.spawn_status(move || tip.height());
+ 
+-    let work_bind = format!("127.0.0.1:{}", options.work_port);
++    let work_bind = bind_addr(&options.work_bind, options.work_port);
+     let work = match node.start_work_service(work_bind.parse().expect("work address"), log.clone(), live.clone()) {
+         Ok(handle) => handle,
+         Err(e) => {
